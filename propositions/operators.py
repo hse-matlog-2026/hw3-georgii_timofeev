@@ -23,6 +23,14 @@ def to_not_and_or(formula: Formula) -> Formula:
         ``'|'``.
     """
     # Task 3.5
+    substitution_map = {"<->": Formula.parse("((p&q)|(~p&~q))"),
+                        "-&": Formula.parse("~(p&q)"),
+                        "-|": Formula.parse("~(p|q)"),
+                        "+": Formula.parse("((p|q)&~(p&q))"),
+                        "T": Formula.parse("(p|~p)"),
+                        "->": Formula.parse("(~p|q)"),
+                        "F": Formula.parse("~(p|~p)")}
+    return formula.substitute_operators(substitution_map)
 
 def to_not_and(formula: Formula) -> Formula:
     """Syntactically converts the given formula to an equivalent formula that
@@ -36,6 +44,8 @@ def to_not_and(formula: Formula) -> Formula:
         contains no constants or operators beyond ``'~'`` and ``'&'``.
     """
     # Task 3.6a
+    substitution_map = {"|": Formula.parse("~(~p&~q)")}
+    return to_not_and_or(formula).substitute_operators(substitution_map)
 
 def to_nand(formula: Formula) -> Formula:
     """Syntactically converts the given formula to an equivalent formula that
@@ -49,6 +59,9 @@ def to_nand(formula: Formula) -> Formula:
         contains no constants or operators beyond ``'-&'``.
     """
     # Task 3.6b
+    substitution_map = {"&": Formula.parse("((p-&q)-&(p-&q))"),
+                        "~": Formula.parse("(p-&p)")}
+    return to_not_and(formula).substitute_operators(substitution_map)
 
 def to_implies_not(formula: Formula) -> Formula:
     """Syntactically converts the given formula to an equivalent formula that
@@ -62,6 +75,9 @@ def to_implies_not(formula: Formula) -> Formula:
         contains no constants or operators beyond ``'->'`` and ``'~'``.
     """
     # Task 3.6c
+    substitution_map = {"|": Formula.parse("(~p->q)"),
+                        "&": Formula.parse("~(p->~q)")}
+    return to_not_and_or(formula).substitute_operators(substitution_map)
 
 def to_implies_false(formula: Formula) -> Formula:
     """Syntactically converts the given formula to an equivalent formula that
@@ -75,3 +91,5 @@ def to_implies_false(formula: Formula) -> Formula:
         contains no constants or operators beyond ``'->'`` and ``'F'``.
     """
     # Task 3.6d
+    substitution_map = {"~": Formula.parse("(p->F)")}
+    return to_implies_not(formula).substitute_operators(substitution_map)
